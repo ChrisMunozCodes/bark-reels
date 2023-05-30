@@ -13,4 +13,6 @@ router.put("/likePost/:id", postsController.likePost);
 
 router.delete("/deletePost/:id", postsController.deletePost);
 
+router.post('/profile', upload.single('file'), userController.updateUserProfilePic);
+
 module.exports = router;
