@@ -1,5 +1,6 @@
 const cloudinary = require("../middleware/cloudinary");
 const Post = require("../models/Post");
+const User = require("../models/User"); // Import the User model
 
 module.exports = {
   getProfile: async (req, res) => {
@@ -7,7 +8,7 @@ module.exports = {
       const posts = await Post.find({ user: req.user.id });
       const user = await User.findById(req.user.id);
       const profilePic = req.user.profilePic;
-      res.render("profile.ejs", { user: profilePic, posts: posts, user: req.user });
+      res.render("profile.ejs", { profilePic: profilePic, posts: posts, user: req.user });
     } catch (err) {
       console.log(err);
     }
@@ -73,25 +74,6 @@ module.exports = {
       res.redirect("/profile");
     } catch (err) {
       res.redirect("/profile");
-    }
-  },
-  updateUserProfilePic: async (req, res) => {
-    try {
-      const user = await User.findById(req.user.id);
-  
-      if (req.file) {
-        // Upload the new profile picture to Cloudinary
-        const result = await cloudinary.uploader.upload(req.file.path, { folder: 'profile-pictures' });
-  
-        // Update the user's profile picture URL in the database
-        user.profilePic = result.secure_url;
-        await user.save();
-      }
-  
-      // Redirect the user back to the profile page
-      res.redirect('/profile');
-    } catch (err) {
-      console.log(err);
     }
   }
 };
